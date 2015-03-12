@@ -1,0 +1,86 @@
+{% extends 'manager/base.html' %}
+
+{% block title %}- {{ item }} Settings{% endblock %}
+
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'manager/DataTables/css/jquery.dataTables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'manager/DataTables/css/dataTables.tableTools.css' %}"/>
+{% endblock css %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'manager/DataTables/js/jquery.dataTables.js' %}"></script>
+    <script type="text/javascript" src="{% static 'manager/DataTables/js/dataTables.tableTools.js' %}"></script>
+{% endblock js %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h3 class="breadcrumb modal-header text-center"><span class="glyphicon glyphicon-th-list"> {{ item }} Drives</span></h3>
+        {% if paths %}
+            <table id="paths_table">
+            <caption>Paths Table</caption>
+                <thead>
+                    <tr>
+                        <th>Paths</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for each in paths %}
+                    <tr><td>{{ each.path }}</td></tr>
+                {% endfor %}
+                </tbody>
+                <tfoot><tr><td>Total Paths: {{ paths|length }}</td></tr></tfoot>
+            </table>
+            <button id="btn">Delete</button>
+        {% else %}
+            <p class="popover-content text-warning"><span class="glyphicon glyphicon-warning-sign"> No path added to {{ item }} Collections</span></p>
+        {% endif %}
+
+        <h2 class="breadcrumb modal-header text-center"><span class="glyphicon glyphicon-paperclip"> {{ item }} Collection</span></h2>
+        {% if media_list %}
+        {% else %}
+            <p class="popover-content text-warning"><span class="glyphicon glyphicon-warning-sign"> No {{ item }} Collection added</span>
+            </p>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var $table = '#paths_table';
+            var dt_opts = {
+                "sPaginationType": "full_numbers",
+                "lengthMenu": [ 5,10,15,20 ],
+                dom: 'T<"clear">lfrtip',
+                tableTools: {
+                    "sRowSelect": "os",
+                    "aButtons": [
+                        //"copy"
+                        //"print",
+                        //{
+                            //"sExtends":    "collection",
+                            //"sButtonText": "Save",
+                            //"aButtons":    [ "csv", "xls", "pdf" ]
+                        //}
+                    ]
+                }
+            };
+            $($table).DataTable(dt_opts);
+{#            $(table + ' tbody tr' ).click(function () {#}
+{#                if ( $(this).hasClass('selected') ) {#}
+{#                    $(this).removeClass('selected');#}
+{#                }#}
+{#                else {#}
+{#                    $(table + ' tbody tr.selected').removeClass('selected');#}
+{#                    $(this).addClass('selected');#}
+{#                }#}
+{#            });#}
+            $('#btn').click( function () {
+                //alert($table.row('.selected'));
+                $($table + ' tr.selected').remove().draw();
+            } );
+        });
+    </script>
+{% endblock content %}
